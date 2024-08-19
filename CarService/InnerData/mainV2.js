@@ -103,7 +103,7 @@ CommentSmt(AccountData.get("Bob"), "1!", article1);
 //Bob.readAllArticles()
 //AnbyArticle.readAllComments()
 
-AccountData.get("Anby").userSummary()
+//AccountData.get("Anby").userSummary()
 //AccountData.get("Bob").userSummary()
 
 //ArticleData.get(1).readAllComments()
@@ -112,7 +112,7 @@ AccountData.get("Anby").userSummary()
 
 
 
-function returnAllComments(inputedUser, inputedId) {
+function returnAllComments(inputedId) {
     const output = [];
     CommentIndex[inputedId].forEach((value) =>{
         let Comment = {
@@ -128,10 +128,13 @@ function returnAllComments(inputedUser, inputedId) {
 
 function returnAllArticles(inputedUser) {
     const output = [];
+    console.log(ArticleIndex[inputedUser.username])
     ArticleIndex[inputedUser.username].forEach((value) =>{
         let Article = {
+            username: inputedUser.username,
             title: ArticleData.get(value).title,
-            comments: returnAllComments(inputedUser, ArticleData.get(value).id)
+            text: ArticleData.get(value).text,
+            comments: returnAllComments(ArticleData.get(value).id)
         }
         output.push(Article)
     }
@@ -141,6 +144,7 @@ function returnAllArticles(inputedUser) {
 
 function returnUser(inputedUser) {
     const output = {
+        username: inputedUser.username,
         email: inputedUser.email,
         articles: returnAllArticles(inputedUser)
     }
@@ -161,6 +165,7 @@ function returnAllUsers() {
 //console.log(tryer.articles, '\n')
 //console.log(tryer.articles[0].comments)
 
-console.log(returnAllUsers())
+//console.log(returnUser(AccountData.get("Anby")))
+//console.log(returnAllUsers())
 
 module.exports = {CreateUser, AddPersonalData, WriteArticle, CommentSmt, FindId, returnAllComments, returnUser,returnAllArticles, returnAllUsers}
