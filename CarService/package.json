@@ -1,0 +1,13 @@
+{
+  "name": "car_service_training",
+  "version": "1.0.0",
+  "description": "training project for learning node js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./startfile.js",
+    "watch": "node --watch ./startfile.js"
+  },
+  "author": "Me",
+  "license": "ISC"
+}
