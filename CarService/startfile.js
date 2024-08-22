@@ -12,15 +12,33 @@ const { logUser, logArticle, logArticleStep2 } = require('./functions.js');
 const events = new eventDispather();
 
 
-events.addListener('user', (data) => {
-    logUser(data[0], data[1]);
-    data[1].end();
+events.addListener('user', ([id, responce, request]) => {
+    logUser(id, responce);
+    responce.end();
 });
 
-events.addListener('article', (data) => {
-    logArticleStep2(Number(data[0]), data[1]);
-    data[1].end();
+events.addListener('article', ([id, responce, request]) => {
+    logArticleStep2(Number(id), responce);
+    responce.end();
 });
+
+events.addListener('GET', ([URLdata, responce, request]) => {
+    events.dispatch(URLdata[1], [URLdata[2], responce, request]);
+    responce.end();
+});
+
+events.addListener('POST', ([notNecessaryHere, responce, request]) => {
+    let body = [];
+    request.on('data', chunk => {
+        body.push(chunk);
+      }).on('error', err => {
+        console.error(err);
+      }).on('end', ()=>{
+        body = body.map((chunk)=>chunk.toString()).join('');
+        responce.end(JSON.stringify(body));
+      })    
+});
+
 
 const server = http.createServer((req, res) => {
 
@@ -29,37 +47,21 @@ const server = http.createServer((req, res) => {
     console.log(req.url)
 
     const urlParsed = url.parse(req.url);
-    //const qsParsed = qs.parse(urlParsed.query)
-
-    //console.log(urlParsed.path)
 
     const urlSplit = (urlParsed.path).split('/')
 
-    console.log(urlSplit)
-
-
-
     try {
-        events.dispatch(urlSplit[1], [urlSplit[2], res]);
+        events.dispatch(req.method, [urlSplit, res, req]);
     } catch (error) { 
         res.end('Error 404 - data not found'); 
     }
 
-    /* fetch('/user/Anby', {
+
+    
+    /* fetch('', {
         method: 'POST',
-        text:'hello'
-    }).then(res=>res.text()).then(console.log) */
-
-
-
-
-
-    /*     events.addListener('comment', (data) => { 
-            console.log('calm ' + data) 
-        }); */
-
-
-
+        body:'hello' + ' my dear friend'
+    }).then(response=>response.text()).then(console.log) */
 
     /*     switch (req.url) {
             case '/Bob':
@@ -73,11 +75,6 @@ const server = http.createServer((req, res) => {
                 res.end('I have no Idea!');
                 break;
         } */
-
-
-
-
-
 
     /* res.write(JSON.stringify(qsParsed));
     res.write('\n');
@@ -105,8 +102,6 @@ const server = http.createServer((req, res) => {
         res.end('404 - data not found.');
     } */
 
-
-
     /*     try {
             switch (urlSplit[1]) {
                 case 'user':
@@ -129,10 +124,6 @@ const server = http.createServer((req, res) => {
         catch (error) {
             res.end('404 - data not found.');
         } */
-
-
-
-
 
 })
 

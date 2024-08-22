@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./startfile.js",
-    "watch": "node --watch ./startfile.js"
+    "watch": "node --watch ./startfile.js",
+    "testFile": "node --watch ./startfile.js"
   },
   "author": "Me",
   "license": "ISC"

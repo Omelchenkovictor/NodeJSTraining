@@ -1,5 +1,6 @@
 class eventDispather {
     listeners = {}
+    //listeners = new Set()
 
     addListener(event, listener) {
         if (!this.listeners[event]) {
@@ -15,6 +16,15 @@ class eventDispather {
         })
     }
 
+/*     dispatch2Events(event1, event2, data) {
+        const listeners = this.listeners[event1].intersect(this.listeners[event2])
+        listeners.forEach((listener) => {
+            listener(data);
+    })
+    } */
+
 }
+
+
 
 module.exports = eventDispather;
