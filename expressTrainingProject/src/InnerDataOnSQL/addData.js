@@ -66,3 +66,4 @@ addUser('Cat', 'meow@mail.bom', 'meow', 'meow-meow');
 })()
  */
 
+module.exports = {addUser, addArticle,addComment};

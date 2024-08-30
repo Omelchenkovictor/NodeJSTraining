@@ -60,4 +60,49 @@ async function logArticle(id) {
     return {article, comments}
 }
 
-module.exports = { logArticle, logUser }
+
+async function changeArticle(id, text) {
+
+    await prisma.article.update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          text: text,
+          updatedAt: new Date
+        }
+    })
+    
+}
+
+async function deleteElement(type, id) {
+    switch (type) {
+        case 'user':
+            await prisma.userAccount.delete({
+                where: {
+                  username: id,
+                },
+            })
+            break;
+        case 'article':
+            await prisma.article.delete({
+                where: {
+                  id: Number(id),
+                },
+            })
+            break;
+        case 'comment':
+            await prisma.comment.delete({
+                where: {
+                  id: Number(id),
+                },
+            })
+            break;
+        default:
+            break;
+    }
+    
+}
+
+
+module.exports = { logArticle, logUser, changeArticle, deleteElement };
