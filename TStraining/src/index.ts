@@ -2,9 +2,6 @@ import express from "express";
 
 const server = express();
 
-var name: string = 'Adam';
-
-console.log(name)
 
 server
     .get('/get', (_, res):void => {
