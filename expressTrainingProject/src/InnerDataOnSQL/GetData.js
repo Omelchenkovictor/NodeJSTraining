@@ -9,31 +9,35 @@ async function logUser(username) {
         where: {
             username: username,
         },
+        include: {
+            articles: true,
+            comments: true,
+        }
     }))
 
     if (user == null) {
-        return {alive: "no", user: null, articles: [], comments: []}
+        return { alive: "no", user: null, articles: [], comments: [] }
     }
 
-    let articles = (await prisma.article.findMany({
-        where: {
-            username: username,
-        },
-    }))
+    // let articles = (await prisma.article.findMany({
+    //     where: {
+    //         username: username,
+    //     },
+    // }))
 
-    
 
-    let comments =(await prisma.comment.findMany({
-        where: {
-            username: username,
-        },
-    }))
+
+    // let comments = (await prisma.comment.findMany({
+    //     where: {
+    //         username: username,
+    //     },
+    // }))
 
 
     //let resJSON = (JSON.stringify({user, articles, comments}, null, ' '))
     //res.write(resJSON)
-    
-    return {user, articles, comments}
+
+    return { user }
 }
 
 
@@ -43,9 +47,9 @@ async function logArticle(id) {
             id: id,
         },
     }))
-    
+
     if (article == null) {
-        return {alive: "no", user: null, articles: [], comments: []}
+        return { alive: "no", user: null, articles: [], comments: [] }
     }
 
     let comments = (await prisma.comment.findMany({
@@ -56,8 +60,8 @@ async function logArticle(id) {
 
     //let resJSON = (JSON.stringify({article, comments}, null, ' '))
     //res.write(resJSON)
-    
-    return {article, comments}
+
+    return { article, comments }
 }
 
 
@@ -65,14 +69,14 @@ async function changeArticle(id, text) {
 
     await prisma.article.update({
         where: {
-          id: Number(id),
+            id: Number(id),
         },
         data: {
-          text: text,
-          updatedAt: new Date
+            text: text,
+            updatedAt: new Date
         }
     })
-    
+
 }
 
 async function deleteElement(type, id) {
@@ -80,28 +84,28 @@ async function deleteElement(type, id) {
         case 'user':
             await prisma.userAccount.delete({
                 where: {
-                  username: id,
+                    username: id,
                 },
             })
             break;
         case 'article':
             await prisma.article.delete({
                 where: {
-                  id: Number(id),
+                    id: Number(id),
                 },
             })
             break;
         case 'comment':
             await prisma.comment.delete({
                 where: {
-                  id: Number(id),
+                    id: Number(id),
                 },
             })
             break;
         default:
             break;
     }
-    
+
 }
 
 
