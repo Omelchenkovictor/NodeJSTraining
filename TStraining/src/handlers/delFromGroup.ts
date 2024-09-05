@@ -1,6 +1,6 @@
 import { leaveGroup } from "../InnerData/GetData";
 
-async function delFromGroup(req:any, res:any, next:Function) {
+async function delFromGroup(req: any, res: any, next: Function) {
     try {
         const userId = req.body.userId
         const groupId = req.body.groupId
@@ -12,4 +12,4 @@ async function delFromGroup(req:any, res:any, next:Function) {
 }
 
 
-export {delFromGroup}
+export { delFromGroup }

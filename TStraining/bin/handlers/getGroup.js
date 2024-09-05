@@ -10,11 +10,12 @@ async function getGroup(req, res, next) {
     if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == req.params.id)) {
         next('403');
     }
-    try {
-        res.write(JSON.stringify(await (0, GetData_1.getGroup)(req.params.id), null, ' '));
-        res.end();
-    }
-    catch (err) {
-        next(err);
-    }
+    else
+        try {
+            res.write(JSON.stringify(await (0, GetData_1.getGroup)(req.params.id), null, ' '));
+            res.end();
+        }
+        catch (err) {
+            next(err);
+        }
 }

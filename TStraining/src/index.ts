@@ -1,5 +1,5 @@
 import express from "express";
-import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup } from "./handlers/index";
+import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup } from "./handlers/index";
 //import { sessionId } from "./middleware/sessionId";
 import cookieParser from "cookie-parser"
 import { checkAdminPermission, checkSuperAdminPermission, checkUserPermission, errorOut } from "./middleware";
@@ -52,6 +52,34 @@ server
         express.json(),
         checkAdminPermission,
         postChat,
+        errorOut
+    )
+    .post('/setAdmin',
+        cookieParser(),
+        express.json(),
+        checkSuperAdminPermission,
+        setAdmin,
+        errorOut
+    )
+    .post('/delAdmin',
+        cookieParser(),
+        express.json(),
+        checkSuperAdminPermission,
+        deleteAdmin,
+        errorOut
+    )
+    .post('/ban',
+        cookieParser(),
+        express.json(),
+        checkAdminPermission,
+        banInGroup,
+        errorOut
+    )
+    .post('/unban',
+        cookieParser(),
+        express.json(),
+        checkAdminPermission,
+        unBanInGroup,
         errorOut
     )
     .get('/user/:username',

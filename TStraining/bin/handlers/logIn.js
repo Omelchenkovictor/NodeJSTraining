@@ -26,7 +26,7 @@ async function logIn(req, res, next) {
                 .cookie('date', date);
             await (0, GetData_1.renewSession)(UUID, username);
             console.log(UUID);
-            console.log('first', (0, sessionControl_1.accessSession)(UUID).groups[0].group);
+            console.log('first', (0, sessionControl_1.accessSession)(UUID) /* .groups[0].group */);
         }
         res.end('done');
     }

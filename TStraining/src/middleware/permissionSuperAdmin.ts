@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import { accessSession } from "../InnerData/sessionControl";
 
 function checkSuperAdminPermission(req:Request, _: Response, next: Function) {
-    if (req.cookies.role == 'superAdmin') {
+    var session = accessSession(req.cookies.sessionId)
+    if (session.role == 'superAdmin') {
         next()
     } else {
         next('403')

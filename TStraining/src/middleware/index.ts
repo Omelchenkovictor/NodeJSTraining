@@ -6,4 +6,11 @@ import { checkAdminPermission } from "./permissionAdmin";
 import { checkSuperAdminPermission } from "./permissionSuperAdmin";
 
 
-export { errorOut, sessionChecker, sessionId, checkUserPermission, checkAdminPermission, checkSuperAdminPermission }
+export {
+    errorOut,
+    sessionChecker,
+    sessionId,
+    checkUserPermission,
+    checkAdminPermission,
+    checkSuperAdminPermission
+}

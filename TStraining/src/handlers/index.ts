@@ -1,14 +1,15 @@
-import { getUser } from "./getUser";
-import { logIn } from "./logIn";
-import { addToGroup } from "./addToGroup";
-import { delFromGroup } from "./delFromGroup";
-import { postChat } from "./postChat";
-import { postUser } from "./postUser"
-import { postMessage } from "./postMessage"
-import { postGroup } from "./postGroup"
-import { getMessage } from "./getMessage";
-import { getChat } from "./getChat";
-import { getGroup } from "./getGroup";
-
-
-export { getUser, getMessage, getChat, getGroup, logIn, addToGroup, delFromGroup, postChat, postUser, postMessage, postGroup }
+export * from "./getUser";
+export * from "./logIn";
+export * from "./addToGroup";
+export * from "./delFromGroup";
+export * from "./postChat";
+export * from "./postUser"
+export * from "./postMessage"
+export * from "./postGroup"
+export * from "./getMessage";
+export * from "./getChat";
+export * from "./getGroup";
+export * from "./setAdmin";
+export * from "./delAdmin";
+export * from "./banInGroup";
+export * from "./unBanInGroup";

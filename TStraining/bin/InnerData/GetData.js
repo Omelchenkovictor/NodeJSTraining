@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMessageGroupId = getMessageGroupId;
 exports.createSession = createSession;
 exports.checkSession = checkSession;
 exports.renewSession = renewSession;
@@ -20,8 +21,6 @@ exports.banInGroup = banInGroup;
 exports.leaveGroup = leaveGroup;
 exports.unBanInGroup = unBanInGroup;
 exports.deleteAdmin = deleteAdmin;
-exports.checkBanned = checkBanned;
-exports.checkAdmin = checkAdmin;
 const { PrismaClient } = require('.prisma/client');
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const sessionControl_1 = require("./sessionControl");
@@ -97,24 +96,6 @@ async function checkSession(req) {
         }
     });
 }
-async function checkBanned(groupId, userId) {
-    return await prisma.userInGroups.findFirst({
-        where: {
-            userId: userId,
-            groupId: groupId,
-            isBanned: false
-        }
-    });
-}
-async function checkAdmin(groupId, userId) {
-    return await prisma.userInGroups.findFirst({
-        where: {
-            userId: userId,
-            groupId: groupId,
-            isAdmin: true
-        }
-    });
-}
 async function createUser(user) {
     user.password = await bcryptjs_1.default.hash(user.password, 10);
     user.role = 1;
@@ -157,8 +138,7 @@ async function joinGroup(userId, groupId) {
 async function leaveGroup(userId, groupId) {
     await prisma.userInGroups.delete({
         where: {
-            userId: userId,
-            groupId: groupId,
+            userId_groupId: { userId, groupId }
         }
     });
 }
@@ -168,7 +148,7 @@ async function banInGroup(userId, groupId) {
             userId: userId,
             groupId: groupId
         },
-        data: {
+        update: {
             isBanned: true
         },
         create: {
@@ -190,14 +170,16 @@ async function unBanInGroup(userId, groupId) {
 async function setAdmin(userId, groupId) {
     await prisma.userInGroups.upsert({
         where: {
-            userId: userId,
-            groupId: groupId
+            userId_groupId: { userId, groupId }
         },
-        data: {
+        update: {
             isAdmin: true
         },
         create: {
-            isAdmin: true
+            userId: userId,
+            groupId: groupId,
+            isAdmin: true,
+            isBanned: false
         }
     });
 }
@@ -225,6 +207,13 @@ async function getMessage(id) {
             id: Number(id),
         },
     }));
+}
+async function getMessageGroupId(id) {
+    return (await prisma.chat.findFirst({
+        where: {
+            id: Number(id),
+        }
+    })).groupId;
 }
 async function getChat(id) {
     return (await prisma.chat.findFirst({

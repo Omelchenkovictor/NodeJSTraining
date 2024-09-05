@@ -23,7 +23,7 @@ async function logIn(req: Request, res: Response, next: Function): Promise<any> 
                 .cookie('date', date)
             await renewSession(UUID, username)
             console.log(UUID)
-            console.log('first', accessSession(UUID).groups[0].group)
+            console.log('first', accessSession(UUID)/* .groups[0].group */)
         }
         res.end('done')
     } catch (err) {

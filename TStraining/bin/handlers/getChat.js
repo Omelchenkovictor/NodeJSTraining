@@ -9,11 +9,12 @@ async function getChat(req, res, next) {
     if (session.role != 'superAdmin' && !session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.params.id))) {
         next('403');
     }
-    try {
-        res.write(JSON.stringify(await (0, GetData_1.getChat)(req.params.id), null, ' '));
-        res.end();
-    }
-    catch (err) {
-        next(err);
-    }
+    else
+        try {
+            res.write(JSON.stringify(await (0, GetData_1.getChat)(req.params.id), null, ' '));
+            res.end();
+        }
+        catch (err) {
+            next(err);
+        }
 }

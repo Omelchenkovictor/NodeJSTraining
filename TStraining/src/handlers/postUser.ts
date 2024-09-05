@@ -1,6 +1,6 @@
 import { createUser } from "../InnerData/GetData";
 
-async function postUser(req:any, res:any, next:Function) {
+async function postUser(req: any, res: any, next: Function) {
     try {
         const user = req.body
         await createUser(user)
@@ -11,4 +11,4 @@ async function postUser(req:any, res:any, next:Function) {
 }
 
 
-export {postUser}
+export { postUser }

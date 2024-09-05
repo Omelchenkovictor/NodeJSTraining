@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkAdminPermission = checkAdminPermission;
+const sessionControl_1 = require("../InnerData/sessionControl");
 function checkAdminPermission(req, _, next) {
-    if (req.cookies.role == 'admin' || req.cookies.role == 'superAdmin') {
+    var session = (0, sessionControl_1.accessSession)(req.cookies.sessionId);
+    if (session.role == 'admin' || session.role == 'superAdmin') {
         next();
     }
     else {

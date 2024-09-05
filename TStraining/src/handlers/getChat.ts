@@ -9,13 +9,13 @@ async function getChat(req: any, res: any, next: Function) {
         next('403')
 
     }
-
-    try {
-        res.write(JSON.stringify(await get(req.params.id), null, ' '))
-        res.end()
-    }
-    catch (err) {
-        next(err)
-    }
+    else
+        try {
+            res.write(JSON.stringify(await get(req.params.id), null, ' '))
+            res.end()
+        }
+        catch (err) {
+            next(err)
+        }
 }
 export { getChat }
