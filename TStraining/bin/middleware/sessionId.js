@@ -11,6 +11,6 @@ async function sessionId(_, res, next) {
         res.cookie('sessionId', randomUUID());
         next()
     } */
-    res.cookie('sessionId', (0, node_crypto_1.randomUUID)());
+    await res.cookie('sessionId', (0, node_crypto_1.randomUUID)());
     next();
 }

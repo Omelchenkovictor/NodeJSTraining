@@ -1,6 +1,6 @@
 import { createGroup } from "../InnerData/GetData";
 
-async function postGroup(req:any, res:any, next:Function) {
+async function postGroup(req: any, res: any, next: Function) {
     try {
         const group = req.body
         await createGroup(group)
@@ -11,4 +11,4 @@ async function postGroup(req:any, res:any, next:Function) {
 }
 
 
-export {postGroup}
+export { postGroup }

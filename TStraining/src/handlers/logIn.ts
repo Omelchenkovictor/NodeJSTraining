@@ -1,26 +1,29 @@
 import bcryptjs from "bcryptjs";
-import { createSession } from "../InnerData/GetData";
+import { createSession, renewSession } from "../InnerData/GetData";
 import { Request, Response } from "express";
-const { getUser } = require ("../InnerData/GetData");
+import { accessSession } from "../InnerData/sessionControl";
+import { randomUUID } from "node:crypto";
+const { getUser } = require("../InnerData/GetData");
 
 
-async function logIn(req:Request, res:Response, next:Function):Promise<any> {
-    let username:string = req.body.username
-    let password:string = req.body.password
+async function logIn(req: Request, res: Response, next: Function): Promise<any> {
+    let username: string = req.body.username
+    let password: string = req.body.password
     try {
         const user = await getUser(username)
         if (await bcryptjs.compare(password, user.password)) {
             // change user access to user admin.lvl
-            res
-            .clearCookie('user')
-            .clearCookie('role')
-            .clearCookie('date')
             let date = new Date
-            await createSession(req.cookies.sessionId, user, date)
+            let UUID = randomUUID()
+            res.cookie('sessionId', UUID);
+            await createSession(UUID, user, date)
             res
-            .cookie('user', username)
-            .cookie('role', user.role)
-            .cookie('date', date)
+                .cookie('user', username)
+                .cookie('role', user.role)
+                .cookie('date', date)
+            await renewSession(UUID, username)
+            console.log(UUID)
+            console.log('first', accessSession(UUID).groups[0].group)
         }
         res.end('done')
     } catch (err) {
@@ -29,4 +32,4 @@ async function logIn(req:Request, res:Response, next:Function):Promise<any> {
 }
 
 
-export {logIn}
+export { logIn }

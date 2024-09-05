@@ -5,7 +5,7 @@ function errorOut(err: string, _: Request, res: Response) {
 
     switch (err) {
         case '403':
-            res.status(404).send({ ErrorMassage: "ERR_403_ACCESS_DENIED!!!111!!1!" })
+            res.status(403).send({ ErrorMassage: "ERR_403_ACCESS_DENIED!!!111!!1!" })
             break;
         case '404':
             res.status(404).send({ ErrorMassage: "ERR_404_DATA_NOT_FOUND!!!111!!1!" })

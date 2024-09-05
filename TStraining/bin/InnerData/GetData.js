@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSession = createSession;
 exports.checkSession = checkSession;
+exports.renewSession = renewSession;
 exports.getUser = getUser;
 exports.getChat = getChat;
 exports.getMessage = getMessage;
@@ -17,8 +18,13 @@ exports.joinGroup = joinGroup;
 exports.setAdmin = setAdmin;
 exports.banInGroup = banInGroup;
 exports.leaveGroup = leaveGroup;
+exports.unBanInGroup = unBanInGroup;
+exports.deleteAdmin = deleteAdmin;
+exports.checkBanned = checkBanned;
+exports.checkAdmin = checkAdmin;
 const { PrismaClient } = require('.prisma/client');
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const sessionControl_1 = require("./sessionControl");
 const prisma = new PrismaClient();
 async function createSession(sessionId, user, date) {
     await prisma.Session.create({
@@ -30,6 +36,57 @@ async function createSession(sessionId, user, date) {
         }
     });
 }
+async function renewSession(UUID, username) {
+    const user = await prisma.userAccount.findFirst({
+        where: {
+            username: username
+        },
+        include: {
+            groups: {
+                include: {
+                    group: {
+                        include: {
+                            chats: {
+                                select: {
+                                    id: true
+                                }
+                            }
+                        }
+                    },
+                },
+                where: {
+                    OR: [
+                        { isBanned: false },
+                        { isAdmin: true }
+                    ]
+                }
+            }
+        },
+    });
+    //console.log(user.groups[0])
+    /* data.userId = (await getUser(req.cookies.user)).id,
+        data.role = req.cookies.role,
+        data.adminIn = await prisma.userInGroups.findMany({
+            where: {
+                userId: data.userId,
+                isAdmin: true
+            },
+            select: {
+                groupId: true,
+            }
+        })
+    data.bannedIn = await prisma.userInGroups.findMany({
+        where: {
+            userId: data.userId,
+            isBanned: true
+        },
+        select: {
+            groupId: true,
+        }
+    }) */
+    (0, sessionControl_1.addNewSession)(UUID, user);
+    //console.log(sessionMap)
+}
 async function checkSession(req) {
     return await prisma.Session.findFirst({
         where: {
@@ -37,6 +94,24 @@ async function checkSession(req) {
             username: req.cookies.username,
             role: req.cookies.role,
             date: req.cookies.date
+        }
+    });
+}
+async function checkBanned(groupId, userId) {
+    return await prisma.userInGroups.findFirst({
+        where: {
+            userId: userId,
+            groupId: groupId,
+            isBanned: false
+        }
+    });
+}
+async function checkAdmin(groupId, userId) {
+    return await prisma.userInGroups.findFirst({
+        where: {
+            userId: userId,
+            groupId: groupId,
+            isAdmin: true
         }
     });
 }
@@ -73,7 +148,9 @@ async function joinGroup(userId, groupId) {
     await prisma.userInGroups.create({
         data: {
             userId: userId,
-            groupId: groupId
+            groupId: groupId,
+            isBanned: false,
+            isAdmin: false
         }
     });
 }
@@ -81,32 +158,58 @@ async function leaveGroup(userId, groupId) {
     await prisma.userInGroups.delete({
         where: {
             userId: userId,
-            groupId: groupId
+            groupId: groupId,
         }
     });
 }
 async function banInGroup(userId, groupId) {
-    await prisma.banList.create({
-        data: {
+    await prisma.userInGroups.upsert({
+        where: {
             userId: userId,
             groupId: groupId
+        },
+        data: {
+            isBanned: true
+        },
+        create: {
+            isBanned: true
+        }
+    });
+}
+async function unBanInGroup(userId, groupId) {
+    await prisma.userInGroups.updade({
+        where: {
+            userId: userId,
+            groupId: groupId
+        },
+        data: {
+            isBanned: false
         }
     });
 }
 async function setAdmin(userId, groupId) {
-    await prisma.adminList.create({
-        data: {
+    await prisma.userInGroups.upsert({
+        where: {
             userId: userId,
             groupId: groupId
-        }
-    });
-    await prisma.userAccount.updade({
-        where: {
-            userId: userId
         },
         data: {
-            role: 'admin'
+            isAdmin: true
+        },
+        create: {
+            isAdmin: true
         }
+    });
+}
+async function deleteAdmin(userId, groupId) {
+    await prisma.userInGroups.update({
+        where: {
+            userId: userId,
+            groupId: groupId
+        },
+        data: {
+            isAdmin: false
+        },
     });
 }
 async function getUser(username) {

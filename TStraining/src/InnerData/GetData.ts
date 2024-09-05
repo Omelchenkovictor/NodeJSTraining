@@ -1,11 +1,12 @@
 const { PrismaClient } = require('.prisma/client');
 import bcryptjs from "bcryptjs";
 import { Request } from "express";
+import { addNewSession } from "./sessionControl";
 
 const prisma = new PrismaClient();
 
 
-async function createSession(sessionId: number, user: any, date: Date) {
+async function createSession(sessionId: string, user: any, date: Date) {
 
     await prisma.Session.create({
         data: {
@@ -16,6 +17,63 @@ async function createSession(sessionId: number, user: any, date: Date) {
         }
     })
 
+}
+
+async function renewSession(UUID: string, username: string, ) {
+    const user = await prisma.userAccount.findFirst({
+        where: {
+            username: username
+        },
+        include: {
+            groups: {
+                include: {
+                    group: {
+                        include: {
+                            chats: {
+                                select: {
+                                    id: true
+                                }
+                            }}
+                    },
+
+                },
+                where: {
+                    OR: [
+                        { isBanned: false },
+                        { isAdmin: true }
+                    ]
+
+                }
+            }
+        },
+    })
+    //console.log(user.groups[0])
+
+    /* data.userId = (await getUser(req.cookies.user)).id,
+        data.role = req.cookies.role,
+        data.adminIn = await prisma.userInGroups.findMany({
+            where: {
+                userId: data.userId,
+                isAdmin: true
+            },
+            select: {
+                groupId: true,
+            }
+        })
+    data.bannedIn = await prisma.userInGroups.findMany({
+        where: {
+            userId: data.userId,
+            isBanned: true
+        },
+        select: {
+            groupId: true,
+        }
+    }) */
+
+
+
+    addNewSession(UUID, user)
+    //console.log(sessionMap)
 }
 
 async function checkSession(req: Request) {
@@ -31,6 +89,30 @@ async function checkSession(req: Request) {
 
 }
 
+
+async function checkBanned(groupId: Number, userId: Number) {
+    return await prisma.userInGroups.findFirst({
+        where: {
+            userId: userId,
+            groupId: groupId,
+            isBanned: false
+        }
+    }
+    )
+}
+
+async function checkAdmin(groupId: Number, userId: Number) {
+    return await prisma.userInGroups.findFirst({
+        where: {
+            userId: userId,
+            groupId: groupId,
+            isAdmin: true
+        }
+    }
+    )
+}
+
+
 async function createUser(user: any) {
 
     user.password = await bcryptjs.hash(user.password, 10)
@@ -43,7 +125,7 @@ async function createUser(user: any) {
 
 async function createGroup(group: any) {
     console.log(group.adminId)
-    if(group.adminId) {
+    if (group.adminId) {
         group.adminId = Number(group.adminId)
     }
     await prisma.group.create({
@@ -77,7 +159,9 @@ async function joinGroup(userId: number, groupId: number) {
 
         data: {
             userId: userId,
-            groupId: groupId
+            groupId: groupId,
+            isBanned: false,
+            isAdmin: false
         }
     })
 
@@ -89,7 +173,7 @@ async function leaveGroup(userId: number, groupId: number) {
 
         where: {
             userId: userId,
-            groupId: groupId
+            groupId: groupId,
         }
     })
 
@@ -97,11 +181,31 @@ async function leaveGroup(userId: number, groupId: number) {
 
 async function banInGroup(userId: number, groupId: number) {
 
-    await prisma.banList.create({
-
-        data: {
+    await prisma.userInGroups.upsert({
+        where: {
             userId: userId,
             groupId: groupId
+        },
+        data: {
+            isBanned: true
+        },
+        create: {
+            isBanned: true
+        }
+    })
+
+}
+
+
+async function unBanInGroup(userId: number, groupId: number) {
+
+    await prisma.userInGroups.updade({
+        where: {
+            userId: userId,
+            groupId: groupId
+        },
+        data: {
+            isBanned: false
         }
     })
 
@@ -109,21 +213,31 @@ async function banInGroup(userId: number, groupId: number) {
 
 async function setAdmin(userId: number, groupId: number) {
 
-    await prisma.adminList.create({
-
-        data: {
+    await prisma.userInGroups.upsert({
+        where: {
             userId: userId,
             groupId: groupId
+        },
+        data: {
+            isAdmin: true
+        },
+        create: {
+            isAdmin: true
         }
     })
 
-    await prisma.userAccount.updade({
+}
+
+async function deleteAdmin(userId: number, groupId: number) {
+
+    await prisma.userInGroups.update({
         where: {
-            userId: userId
+            userId: userId,
+            groupId: groupId
         },
         data: {
-            role: 'admin'
-        }
+            isAdmin: false
+        },
     })
 
 }
@@ -176,4 +290,4 @@ async function getGroup(id: number) {
 
 
 
-export { createSession, checkSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup }
+export { createSession, checkSession, renewSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup, unBanInGroup, deleteAdmin, checkBanned, checkAdmin }

@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logIn = logIn;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const GetData_1 = require("../InnerData/GetData");
+const sessionControl_1 = require("../InnerData/sessionControl");
+const node_crypto_1 = require("node:crypto");
 const { getUser } = require("../InnerData/GetData");
 async function logIn(req, res, next) {
     let username = req.body.username;
@@ -14,16 +16,17 @@ async function logIn(req, res, next) {
         const user = await getUser(username);
         if (await bcryptjs_1.default.compare(password, user.password)) {
             // change user access to user admin.lvl
-            res
-                .clearCookie('user')
-                .clearCookie('role')
-                .clearCookie('date');
             let date = new Date;
-            await (0, GetData_1.createSession)(req.cookies.sessionId, user, date);
+            let UUID = (0, node_crypto_1.randomUUID)();
+            res.cookie('sessionId', UUID);
+            await (0, GetData_1.createSession)(UUID, user, date);
             res
                 .cookie('user', username)
                 .cookie('role', user.role)
                 .cookie('date', date);
+            await (0, GetData_1.renewSession)(UUID, username);
+            console.log(UUID);
+            console.log('first', (0, sessionControl_1.accessSession)(UUID).groups[0].group);
         }
         res.end('done');
     }

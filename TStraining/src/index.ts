@@ -1,11 +1,12 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup } from "./handlers/index";
-import { sessionId } from "./middleware/sessionId";
+//import { sessionId } from "./middleware/sessionId";
 import cookieParser from "cookie-parser"
 import { checkAdminPermission, checkSuperAdminPermission, checkUserPermission, errorOut } from "./middleware";
-
+//import { sessionMap } from "./InnerData/sessionControl";
 
 const server = express();
+//const sessions = sessionMap
 /* 
 fetch('/logIn', {
     headers: { 'Content-Type': 'application/json'},
@@ -22,23 +23,18 @@ server
     })
     .post('/login',
         cookieParser(),
-        sessionId,
         express.json(),
-        async (req: Request, res: Response, next: Function) => {
-            await logIn(req, res, next)
-        },
+        logIn,
         errorOut
     )
     .post('/post/user',
         cookieParser(),
-        sessionId,
         express.json(),
         postUser,
         errorOut
     )
     .post('/post/message',
         cookieParser(),
-        sessionId,
         express.json(),
         checkUserPermission,
         postMessage,
@@ -46,7 +42,6 @@ server
     )
     .post('/post/group',
         cookieParser(),
-        sessionId,
         express.json(),
         checkSuperAdminPermission,
         postGroup,
@@ -54,7 +49,6 @@ server
     )
     .post('/post/chat',
         cookieParser(),
-        sessionId,
         express.json(),
         checkAdminPermission,
         postChat,
@@ -62,14 +56,12 @@ server
     )
     .get('/user/:username',
     cookieParser(),
-    sessionId,
     express.json(),
     getUser,
     errorOut
 )
     .get('/message/:id',
         cookieParser(),
-        sessionId,
         express.json(),
         checkUserPermission,
         getMessage,
@@ -77,7 +69,6 @@ server
     )
     .get('/chat/:id',
     cookieParser(),
-    sessionId,
     express.json(),
     checkUserPermission,
     getChat,
@@ -85,7 +76,6 @@ server
 )
     .get('/Group/:id',
     cookieParser(),
-    sessionId,
     express.json(),
     checkUserPermission,
     getGroup,

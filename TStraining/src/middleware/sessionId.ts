@@ -9,7 +9,7 @@ async function sessionId(_: any, res: any, next: Function) {
         res.cookie('sessionId', randomUUID());
         next()
     } */
-    res.cookie('sessionId', randomUUID());
+    await res.cookie('sessionId', randomUUID());
     next()
 
 }
