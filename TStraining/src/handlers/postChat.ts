@@ -3,7 +3,7 @@ import { accessSession } from "../InnerData/sessionControl";
 
 async function postChat(req: any, res: any, next: Function) {
 
-    let session = accessSession(req.cookie.sessionId)
+    let session = await accessSession(req.cookies.sessionId)
     const groupId = req.body.groupId
 
     if (session.role != 'superAdmin' && !session.groups.find((element: any) => element.groupId == groupId && element.isAdmin == true)) {

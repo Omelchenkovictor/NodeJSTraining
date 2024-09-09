@@ -4,7 +4,7 @@ exports.unBanInGroup = unBanInGroup;
 const GetData_1 = require("../InnerData/GetData");
 const sessionControl_1 = require("../InnerData/sessionControl");
 async function unBanInGroup(req, res, next) {
-    let session = (0, sessionControl_1.accessSession)(req.cookie.sessionId);
+    let session = (0, sessionControl_1.accessSession)(req.cookies.sessionId);
     const userId = req.body.userId;
     const groupId = req.body.groupId;
     if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {

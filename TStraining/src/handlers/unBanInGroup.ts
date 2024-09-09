@@ -2,7 +2,7 @@ import { unBanInGroup as ban } from "../InnerData/GetData"
 import { accessSession } from "../InnerData/sessionControl"
 
 async function unBanInGroup(req: any, res: any, next: Function) {
-    let session = accessSession(req.cookie.sessionId)
+    let session = accessSession(req.cookies.sessionId)
     const userId = req.body.userId
     const groupId = req.body.groupId
 

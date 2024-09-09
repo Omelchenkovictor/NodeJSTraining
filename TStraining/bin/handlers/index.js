@@ -29,3 +29,5 @@ __exportStar(require("./setAdmin"), exports);
 __exportStar(require("./delAdmin"), exports);
 __exportStar(require("./banInGroup"), exports);
 __exportStar(require("./unBanInGroup"), exports);
+__exportStar(require("./unBanInChat"), exports);
+__exportStar(require("./banInChat"), exports);

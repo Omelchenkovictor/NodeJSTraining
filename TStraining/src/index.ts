@@ -1,5 +1,5 @@
 import express from "express";
-import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup } from "./handlers/index";
+import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup, addToGroup, banInChat, unBanInChat, delFromGroup } from "./handlers/index";
 //import { sessionId } from "./middleware/sessionId";
 import cookieParser from "cookie-parser"
 import { checkAdminPermission, checkSuperAdminPermission, checkUserPermission, errorOut } from "./middleware";
@@ -68,11 +68,25 @@ server
         deleteAdmin,
         errorOut
     )
-    .post('/ban',
+    .post('/banInGroup',
         cookieParser(),
         express.json(),
         checkAdminPermission,
         banInGroup,
+        errorOut
+    )
+    .post('/banInChat',
+        cookieParser(),
+        express.json(),
+        checkAdminPermission,
+        banInChat,
+        errorOut
+    )
+    .post('/ubBanInChat',
+        cookieParser(),
+        express.json(),
+        checkAdminPermission,
+        unBanInChat,
         errorOut
     )
     .post('/unban',
@@ -80,6 +94,20 @@ server
         express.json(),
         checkAdminPermission,
         unBanInGroup,
+        errorOut
+    )
+    .post('/addToGroup',
+        cookieParser(),
+        express.json(),
+        checkUserPermission,
+        addToGroup,
+        errorOut
+    )
+    .post('/delFromGroup',
+        cookieParser(),
+        express.json(),
+        checkUserPermission,
+        delFromGroup,
         errorOut
     )
     .get('/user/:username',

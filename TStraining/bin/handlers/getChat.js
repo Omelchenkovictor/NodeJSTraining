@@ -11,8 +11,15 @@ async function getChat(req, res, next) {
     }
     else
         try {
-            res.write(JSON.stringify(await (0, GetData_1.getChat)(req.params.id), null, ' '));
-            res.end();
+            let banned = await (0, GetData_1.isChatBanned)(session.id, req.params.id);
+            console.log(banned);
+            if (banned != null && banned.isBanned) {
+                next('403');
+            }
+            else {
+                res.write(JSON.stringify(await (0, GetData_1.getChat)(req.params.id), null, ' '));
+                res.end();
+            }
         }
         catch (err) {
             next(err);

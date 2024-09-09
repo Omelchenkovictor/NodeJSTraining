@@ -95,7 +95,7 @@ async function checkSession(req: Request) {
 async function createUser(user: any) {
 
     user.password = await bcryptjs.hash(user.password, 10)
-    user.role = 1;
+    user.role = 'user';
     await prisma.userAccount.create({
         data: user
     })
@@ -133,12 +133,13 @@ async function createMessage(message: any) {
 }
 
 async function joinGroup(userId: number, groupId: number) {
-
+    userId = Number(userId);
+    groupId = Number(groupId);
     await prisma.userInGroups.create({
 
         data: {
-            userId: userId,
-            groupId: groupId,
+            userId: Number(userId),
+            groupId: Number(groupId),
             isBanned: false,
             isAdmin: false
         }
@@ -147,27 +148,42 @@ async function joinGroup(userId: number, groupId: number) {
 }
 
 async function leaveGroup(userId: number, groupId: number) {
-
+    userId = Number(userId);
+    groupId = Number(groupId);
     await prisma.userInGroups.delete({
 
         where: {
-            userId_groupId: {userId, groupId}
+            userId_groupId: { userId, groupId }
         }
     })
 
 }
 
 async function banInGroup(userId: number, groupId: number) {
-
+    userId = Number(userId);
+    groupId = Number(groupId);
     await prisma.userInGroups.upsert({
         where: {
-            userId: userId,
-            groupId: groupId
+            userId_groupId: { userId, groupId }
         },
         update: {
             isBanned: true
         },
         create: {
+            user: {
+                connect: {
+
+                    id: userId
+
+                }
+            },
+            group: {
+                connect: {
+
+                    id: groupId
+
+                }
+            },
             isBanned: true
         }
     })
@@ -175,12 +191,95 @@ async function banInGroup(userId: number, groupId: number) {
 }
 
 
-async function unBanInGroup(userId: number, groupId: number) {
+async function banInChat(userId: number, chatId: number) {
+    userId = Number(userId);
+    chatId = Number(chatId);
+    await prisma.userInChats.upsert({
+        where: {
+            userId_chatId: { userId: userId, chatId: chatId }
+        },
+        update: {
+            isBanned: true
+        },
+        create: {
+            // userAndGroup: {
+            //     connectOrCreate: { 
+            //         where: {userId_groupId: {
+            //         userId: userId,
+            //         groupId: await getMessageGroupId(chatId)
+            //         } },
+            //         create: {
+            //             userId_groupId: {
+            //                 userId: userId,
+            //                 groupId: await getMessageGroupId(chatId)
+            //                 }
+            //         }
 
-    await prisma.userInGroups.updade({
+            //     }
+            //     /* userId_groupId: {
+            //         userId: userId,
+            //         groupId: await getMessageGroupId(chatId)
+            //     } */
+            // },
+            // chat: {
+            //     connect: { id: chatId }
+            // },
+
+            user: {
+                connect: {
+
+                    id: userId
+
+                }
+            },
+            chat: {
+                connect: {
+
+                    id: chatId
+
+                }
+            },
+            isBanned: true
+        }
+    })
+
+}
+
+async function unBanInChat(userId: number, chatId: number) {
+    userId = Number(userId);
+    chatId = Number(chatId);
+    await prisma.userInChats.upsert({
+        where: {
+            userId_chatId: { userId, chatId }
+        },
+        update: {
+            isBanned: false
+        },
+        create: {
+            isBanned: false
+        }
+    })
+
+}
+
+async function isChatBanned(userId: number, chatId: number) {
+    userId = Number(userId);
+    chatId = Number(chatId);
+    return (await prisma.userInChats.findFirst({
         where: {
             userId: userId,
-            groupId: groupId
+            chatId: chatId
+        }
+    }))
+}
+
+
+async function unBanInGroup(userId: number, groupId: number) {
+    userId = Number(userId);
+    groupId = Number(groupId);
+    await prisma.userInGroups.updade({
+        where: {
+            userId_groupId: { userId, groupId }
         },
         data: {
             isBanned: false
@@ -231,6 +330,7 @@ async function getUser(username: string) {
         where: {
             username: username,
         },
+
     }))
 }
 
@@ -278,4 +378,4 @@ async function getGroup(id: number) {
 
 
 
-export { getMessageGroupId, createSession, checkSession, renewSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup, unBanInGroup, deleteAdmin }
+export { banInChat, unBanInChat, isChatBanned, getMessageGroupId, createSession, checkSession, renewSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup, unBanInGroup, deleteAdmin }

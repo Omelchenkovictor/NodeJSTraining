@@ -13,3 +13,5 @@ export * from "./setAdmin";
 export * from "./delAdmin";
 export * from "./banInGroup";
 export * from "./unBanInGroup";
+export * from "./unBanInChat";
+export * from "./banInChat";

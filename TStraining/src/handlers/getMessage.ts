@@ -1,4 +1,4 @@
-import { getMessage as get, getMessageGroupId } from "../InnerData/GetData";
+import { getMessage as get, getMessageGroupId, isChatBanned } from "../InnerData/GetData";
 import { accessSession } from "../InnerData/sessionControl";
 async function getMessage(req: any, res: any, next: Function) {
 
@@ -13,6 +13,12 @@ async function getMessage(req: any, res: any, next: Function) {
     }
     else
         try {
+            let banned = await isChatBanned(session.id, message.chatId)
+            if (!banned && banned.isBanned) {
+
+                next('403')
+
+            }
             res.write(JSON.stringify(message), null, ' ')
             res.end()
         }

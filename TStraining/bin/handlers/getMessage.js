@@ -14,6 +14,10 @@ async function getMessage(req, res, next) {
     }
     else
         try {
+            let banned = await (0, GetData_1.isChatBanned)(session.id, message.chatId);
+            if (!banned && banned.isBanned) {
+                next('403');
+            }
             res.write(JSON.stringify(message), null, ' ');
             res.end();
         }

@@ -18,6 +18,7 @@ model UserAccount {
   username  String         @unique
   password  String
   groups    UserInGroups[]
+  chats    UserInChats[]
   messages  Message[]
   banList   BanList[]
   adminList AdminList[]
@@ -34,8 +35,22 @@ model UserInGroups {
   isBanned Boolean     @default(false)
   isAdmin  Boolean     @default(false)
 
+
   @@id([userId, groupId])
 }
+
+model UserInChats {
+  user     UserAccount @relation(fields: [userId], references: [id])
+  userId   Int
+  chat    Chat       @relation(fields: [chatId], references: [id])
+  chatId  Int
+  isBanned Boolean     @default(false)
+  isAdmin  Boolean     @default(false)
+
+
+  @@id([userId, chatId])
+}
+
 
 model Group {
   id      Int            @id @unique @default(autoincrement())
@@ -56,6 +71,7 @@ model Chat {
   groupId  Int
   title    String
   messages Message[]
+  userInChat UserInChats[]
 
   @@map("chats")
 }
