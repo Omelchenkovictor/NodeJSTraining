@@ -258,6 +258,8 @@ async function unBanInGroup(userId, groupId) {
     });
 }
 async function setAdmin(userId, groupId) {
+    userId = Number(userId);
+    groupId = Number(groupId);
     await prisma.userInGroups.upsert({
         where: {
             userId_groupId: { userId, groupId }
@@ -274,6 +276,8 @@ async function setAdmin(userId, groupId) {
     });
 }
 async function deleteAdmin(userId, groupId) {
+    userId = Number(userId);
+    groupId = Number(groupId);
     await prisma.userInGroups.update({
         where: {
             userId: userId,

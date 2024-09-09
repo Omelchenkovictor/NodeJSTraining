@@ -1,12 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUserPermission = checkUserPermission;
+exports.checkCurrentUser = checkCurrentUser;
 const sessionControl_1 = require("../InnerData/sessionControl");
-function checkUserPermission(req, _, next) {
+function checkCurrentUser(req, _, next) {
     var session = (0, sessionControl_1.accessSession)(req.cookies.sessionId);
-    if (session.role == 'user' ||
-        session.role == 'admin' ||
-        session.role == 'superAdmin') {
+    if (session.id == req.body.userId || session.username == req.body.username || session.id == req.body.id) {
         next();
     }
     else {
