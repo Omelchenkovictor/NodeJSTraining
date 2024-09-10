@@ -2,7 +2,7 @@ import express from "express";
 import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup, addToGroup, banInChat, unBanInChat, delFromGroup } from "./handlers/index";
 //import { sessionId } from "./middleware/sessionId";
 import cookieParser from "cookie-parser"
-import { checkAdminPermission, checkSuperAdminPermission, checkUserPermission, errorOut } from "./middleware";
+import { checkAdminPermission, checkCurrentUser, checkSuperAdminPermission, checkUserPermission, errorOut, permission } from "./middleware";
 //import { sessionMap } from "./InnerData/sessionControl";
 
 const server = express();
@@ -36,77 +36,80 @@ server
     .post('/post/message',
         cookieParser(),
         express.json(),
-        checkUserPermission,
+        permission(['user','admin','superAdmin']),
+        checkCurrentUser,
         postMessage,
         errorOut
     )
     .post('/post/group',
         cookieParser(),
         express.json(),
-        checkSuperAdminPermission,
+        permission(['superAdmin']),
         postGroup,
         errorOut
     )
     .post('/post/chat',
         cookieParser(),
         express.json(),
-        checkAdminPermission,
+        permission(['admin','superAdmin']),
         postChat,
         errorOut
     )
     .post('/setAdmin',
         cookieParser(),
         express.json(),
-        checkSuperAdminPermission,
+        permission(['superAdmin']),
         setAdmin,
         errorOut
     )
     .post('/delAdmin',
         cookieParser(),
         express.json(),
-        checkSuperAdminPermission,
+        permission(['superAdmin']),
         deleteAdmin,
         errorOut
     )
     .post('/banInGroup',
         cookieParser(),
         express.json(),
-        checkAdminPermission,
+        permission(['admin','superAdmin']),
         banInGroup,
         errorOut
     )
     .post('/banInChat',
         cookieParser(),
         express.json(),
-        checkAdminPermission,
+        permission(['admin','superAdmin']),
         banInChat,
         errorOut
     )
     .post('/ubBanInChat',
         cookieParser(),
         express.json(),
-        checkAdminPermission,
+        permission(['admin','superAdmin']),
         unBanInChat,
         errorOut
     )
     .post('/unban',
         cookieParser(),
         express.json(),
-        checkAdminPermission,
+        permission(['admin','superAdmin']),
         unBanInGroup,
         errorOut
     )
     .post('/addToGroup',
         cookieParser(),
         express.json(),
-        checkUserPermission,
+        permission(['user','admin','superAdmin']),
+        checkCurrentUser,
         addToGroup,
         errorOut
     )
     .post('/delFromGroup',
         cookieParser(),
         express.json(),
-        checkUserPermission,
+        permission(['user','admin','superAdmin']),
+        checkCurrentUser,
         delFromGroup,
         errorOut
     )
@@ -119,21 +122,21 @@ server
     .get('/message/:id',
         cookieParser(),
         express.json(),
-        checkUserPermission,
+        permission(['user','admin','superAdmin']),
         getMessage,
         errorOut
     )
     .get('/chat/:id',
     cookieParser(),
     express.json(),
-    checkUserPermission,
+    permission(['user','admin','superAdmin']),
     getChat,
     errorOut
 )
     .get('/Group/:id',
     cookieParser(),
     express.json(),
-    checkUserPermission,
+    permission(['user','admin','superAdmin']),
     getGroup,
     errorOut
 )

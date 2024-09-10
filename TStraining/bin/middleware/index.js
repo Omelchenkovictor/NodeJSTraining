@@ -21,3 +21,4 @@ __exportStar(require("./permissionUser"), exports);
 __exportStar(require("./permissionAdmin"), exports);
 __exportStar(require("./permissionSuperAdmin"), exports);
 __exportStar(require("./checkCurrentUser"), exports);
+__exportStar(require("./permission"), exports);

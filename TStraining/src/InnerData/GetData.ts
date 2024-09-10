@@ -305,6 +305,14 @@ async function setAdmin(userId: number, groupId: number) {
             isBanned: false
         }
     })
+    await prisma.userAccount.update({
+        where: {
+            id:  userId
+        },
+        data: {
+            role: 'admin'
+        }
+    })
 
 }
 

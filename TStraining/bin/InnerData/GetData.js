@@ -274,6 +274,14 @@ async function setAdmin(userId, groupId) {
             isBanned: false
         }
     });
+    await prisma.userAccount.update({
+        where: {
+            id: userId
+        },
+        data: {
+            role: 'admin'
+        }
+    });
 }
 async function deleteAdmin(userId, groupId) {
     userId = Number(userId);

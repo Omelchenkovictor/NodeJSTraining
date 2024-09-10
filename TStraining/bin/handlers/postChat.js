@@ -6,16 +6,17 @@ const sessionControl_1 = require("../InnerData/sessionControl");
 async function postChat(req, res, next) {
     let session = await (0, sessionControl_1.accessSession)(req.cookies.sessionId);
     const groupId = req.body.groupId;
-    if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {
-        next('403');
-    }
-    else
-        try {
+    try {
+        if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {
+            next('403');
+        }
+        else {
             const chat = req.body;
             await (0, GetData_1.createChat)(chat);
             res.end('done');
         }
-        catch (err) {
-            next(err);
-        }
+    }
+    catch (error) {
+        next(error);
+    }
 }

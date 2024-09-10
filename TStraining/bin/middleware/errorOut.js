@@ -15,5 +15,4 @@ function errorOut(err, _, res) {
         default:
             res.status(666).send({ ErrorMassage: "UNEXPECTED_ERROR!!!111!!1!" });
     }
-    res.status(500).send({ ErrorMassage: "ERR_500_ALL_DEAD!!!111!!1!" });
 }

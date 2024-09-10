@@ -5,4 +5,4 @@ export * from "./permissionUser";
 export * from "./permissionAdmin";
 export * from "./permissionSuperAdmin";
 export * from "./checkCurrentUser"
-
+export * from "./permission"
