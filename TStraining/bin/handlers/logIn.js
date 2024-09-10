@@ -27,8 +27,11 @@ async function logIn(req, res, next) {
             await (0, GetData_1.renewSession)(UUID, username);
             console.log(UUID);
             console.log('first', (0, sessionControl_1.accessSession)(UUID) /* .groups[0].group */);
+            res.end('done');
         }
-        res.end('done');
+        else {
+            next('403');
+        }
     }
     catch (err) {
         next(err);

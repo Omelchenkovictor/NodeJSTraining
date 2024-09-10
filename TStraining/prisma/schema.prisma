@@ -20,7 +20,7 @@ model UserAccount {
   groups    UserInGroups[]
   chats    UserInChats[]
   messages  Message[]
-  banList   BanList[]
+  //banList   BanList[]
   adminList AdminList[]
   role      String?
 
@@ -56,7 +56,7 @@ model Group {
   id      Int            @id @unique @default(autoincrement())
   chats   Chat[]
   members UserInGroups[]
-  banned  BanList[]
+  //banned  BanList[]
   admin   AdminList?     @relation(fields: [adminId], references: [userId])
   adminId Int?
   title   String         @unique
@@ -87,15 +87,15 @@ model Message {
   @@map("messages")
 }
 
-model BanList {
-  user    UserAccount @relation(fields: [userId], references: [id])
-  userId  Int
-  group   Group       @relation(fields: [groupId], references: [id])
-  groupId Int
+// model BanList {
+//   user    UserAccount @relation(fields: [userId], references: [id])
+//   userId  Int
+//   group   Group       @relation(fields: [groupId], references: [id])
+//   groupId Int
 
-  @@id([userId, groupId])
-  @@map("banlist")
-}
+//   @@id([userId, groupId])
+//   @@map("banlist")
+// }
 
 model AdminList {
   user   UserAccount @relation(fields: [userId], references: [id])

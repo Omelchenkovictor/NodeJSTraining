@@ -9,8 +9,8 @@ async function getChat(req, res, next) {
         let banned = await (0, GetData_1.isChatBanned)(session.id, req.params.id);
         // It was worth to do this as middleware
         if (session.role != 'superAdmin'
-            && (session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.params.id)) == undefined
-                || (banned != null && banned.isBanned))) {
+            && (session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.params.id) && element.isAdmin == false) != undefined
+                && (banned != null && banned.isBanned))) {
             next('403');
         }
         else {

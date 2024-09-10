@@ -7,7 +7,9 @@ async function postChat(req: any, res: any, next: Function) {
     const groupId = req.body.groupId
 
     try {
-        if (session.role != 'superAdmin' && !session.groups.find((element: any) => element.groupId == groupId && element.isAdmin == true)) {
+        if (session.role != 'superAdmin' 
+        && !session.groups.find((element: any) => 
+            element.groupId == groupId && element.isAdmin == true)) {
             next('403')
 
         }
