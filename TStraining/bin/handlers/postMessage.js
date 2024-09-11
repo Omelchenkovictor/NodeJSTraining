@@ -7,20 +7,20 @@ async function postMessage(req, res, next) {
     try {
         let session = await (0, sessionControl_1.accessSession)(req.cookies.sessionId);
         let banned = await (0, GetData_1.isChatBanned)(session.id, req.body.chatId);
-        console.log(banned);
-        // I can change code here to get 1 less DB operation ( like what i am doing in post method for message )
-        if (session.role != 'superAdmin'
-            && (session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.body.chatId)) == undefined
-                || (banned != null && banned.isBanned))) {
-            next('403');
-        }
-        else {
+        if (session.role == 'superAdmin'
+            || await session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.body.chatId) && element.isAdmin) != undefined
+            || (await session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.body.chatId)) != undefined
+                && (banned == null || !banned.isBanned))) {
             const message = req.body;
+            message.userId = session.id;
             await (0, GetData_1.createMessage)(message);
             res.end('done');
         }
+        else {
+            next(403);
+        }
     }
-    catch (error) {
-        next(error);
+    catch (err) {
+        next(err);
     }
 }

@@ -2,7 +2,7 @@ import express from "express";
 import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup, addToGroup, banInChat, unBanInChat, delFromGroup } from "./handlers/index";
 //import { sessionId } from "./middleware/sessionId";
 import cookieParser from "cookie-parser"
-import { checkAdminPermission, checkCurrentUser, checkSuperAdminPermission, checkUserPermission, errorOut, permission } from "./middleware";
+import {  chatAcces, checkCurrentUser,  errorOut, permission } from "./middleware/index";
 //import { sessionMap } from "./InnerData/sessionControl";
 
 const server = express();
@@ -130,6 +130,7 @@ server
     cookieParser(),
     express.json(),
     permission(['user','admin','superAdmin']),
+    chatAcces(),
     getChat,
     errorOut
 )

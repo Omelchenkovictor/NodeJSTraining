@@ -45,7 +45,7 @@ model UserInChats {
   chat    Chat       @relation(fields: [chatId], references: [id])
   chatId  Int
   isBanned Boolean     @default(false)
-  isAdmin  Boolean     @default(false)
+  //isAdmin  Boolean     @default(false)
 
 
   @@id([userId, chatId])

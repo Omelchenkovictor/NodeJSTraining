@@ -6,3 +6,4 @@ export * from "./permissionAdmin";
 export * from "./permissionSuperAdmin";
 export * from "./checkCurrentUser"
 export * from "./permission"
+export * from "./accessChat"

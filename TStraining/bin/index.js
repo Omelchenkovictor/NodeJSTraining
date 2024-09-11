@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const index_1 = require("./handlers/index");
 //import { sessionId } from "./middleware/sessionId";
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const middleware_1 = require("./middleware");
+const index_2 = require("./middleware/index");
 //import { sessionMap } from "./InnerData/sessionControl";
 const server = (0, express_1.default)();
 //const sessions = sessionMap
@@ -23,23 +23,23 @@ server
     .get('/home', (_, res) => {
     res.end('Hello there!');
 })
-    .post('/login', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.logIn, middleware_1.errorOut)
-    .post('/post/user', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.postUser, middleware_1.errorOut)
-    .post('/post/message', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), middleware_1.checkCurrentUser, index_1.postMessage, middleware_1.errorOut)
-    .post('/post/group', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['superAdmin']), index_1.postGroup, middleware_1.errorOut)
-    .post('/post/chat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['admin', 'superAdmin']), index_1.postChat, middleware_1.errorOut)
-    .post('/setAdmin', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['superAdmin']), index_1.setAdmin, middleware_1.errorOut)
-    .post('/delAdmin', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['superAdmin']), index_1.deleteAdmin, middleware_1.errorOut)
-    .post('/banInGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['admin', 'superAdmin']), index_1.banInGroup, middleware_1.errorOut)
-    .post('/banInChat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['admin', 'superAdmin']), index_1.banInChat, middleware_1.errorOut)
-    .post('/ubBanInChat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['admin', 'superAdmin']), index_1.unBanInChat, middleware_1.errorOut)
-    .post('/unban', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['admin', 'superAdmin']), index_1.unBanInGroup, middleware_1.errorOut)
-    .post('/addToGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), middleware_1.checkCurrentUser, index_1.addToGroup, middleware_1.errorOut)
-    .post('/delFromGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), middleware_1.checkCurrentUser, index_1.delFromGroup, middleware_1.errorOut)
-    .get('/user/:username', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.getUser, middleware_1.errorOut)
-    .get('/message/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), index_1.getMessage, middleware_1.errorOut)
-    .get('/chat/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), index_1.getChat, middleware_1.errorOut)
-    .get('/Group/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, middleware_1.permission)(['user', 'admin', 'superAdmin']), index_1.getGroup, middleware_1.errorOut);
+    .post('/login', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.logIn, index_2.errorOut)
+    .post('/post/user', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.postUser, index_2.errorOut)
+    .post('/post/message', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), index_2.checkCurrentUser, index_1.postMessage, index_2.errorOut)
+    .post('/post/group', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['superAdmin']), index_1.postGroup, index_2.errorOut)
+    .post('/post/chat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['admin', 'superAdmin']), index_1.postChat, index_2.errorOut)
+    .post('/setAdmin', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['superAdmin']), index_1.setAdmin, index_2.errorOut)
+    .post('/delAdmin', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['superAdmin']), index_1.deleteAdmin, index_2.errorOut)
+    .post('/banInGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['admin', 'superAdmin']), index_1.banInGroup, index_2.errorOut)
+    .post('/banInChat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['admin', 'superAdmin']), index_1.banInChat, index_2.errorOut)
+    .post('/ubBanInChat', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['admin', 'superAdmin']), index_1.unBanInChat, index_2.errorOut)
+    .post('/unban', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['admin', 'superAdmin']), index_1.unBanInGroup, index_2.errorOut)
+    .post('/addToGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), index_2.checkCurrentUser, index_1.addToGroup, index_2.errorOut)
+    .post('/delFromGroup', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), index_2.checkCurrentUser, index_1.delFromGroup, index_2.errorOut)
+    .get('/user/:username', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.getUser, index_2.errorOut)
+    .get('/message/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), index_1.getMessage, index_2.errorOut)
+    .get('/chat/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), (0, index_2.chatAcces)(), index_1.getChat, index_2.errorOut)
+    .get('/Group/:id', (0, cookie_parser_1.default)(), express_1.default.json(), (0, index_2.permission)(['user', 'admin', 'superAdmin']), index_1.getGroup, index_2.errorOut);
 server
     .get('/get', (_, res) => {
     res.end('localhost is up');

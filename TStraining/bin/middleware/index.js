@@ -22,3 +22,4 @@ __exportStar(require("./permissionAdmin"), exports);
 __exportStar(require("./permissionSuperAdmin"), exports);
 __exportStar(require("./checkCurrentUser"), exports);
 __exportStar(require("./permission"), exports);
+__exportStar(require("./accessChat"), exports);

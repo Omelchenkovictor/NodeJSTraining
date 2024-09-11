@@ -100,6 +100,7 @@ async function checkSession(req) {
     });
 }
 async function createUser(user) {
+    user.id = Number(user.id);
     user.password = await bcryptjs_1.default.hash(user.password, 10);
     user.role = 'user';
     await prisma.userAccount.create({
@@ -107,7 +108,7 @@ async function createUser(user) {
     });
 }
 async function createGroup(group) {
-    console.log(group.adminId);
+    group.id = Number(group.id);
     if (group.adminId) {
         group.adminId = Number(group.adminId);
     }
