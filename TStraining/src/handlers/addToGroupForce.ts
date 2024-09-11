@@ -1,6 +1,6 @@
 import { joinGroup } from "../InnerData/GetData";
 
-async function addToGroup(req: any, res: any, next: Function) {
+async function addToGroupForse(req: any, res: any, next: Function) {
     try {
         const userId = req.body.userId
         const groupId = req.body.groupId
@@ -12,4 +12,4 @@ async function addToGroup(req: any, res: any, next: Function) {
 }
 
 
-export { addToGroup }
+export { addToGroupForse }

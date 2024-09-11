@@ -1,6 +1,7 @@
 export * from "./getUser";
 export * from "./logIn";
 export * from "./addToGroup";
+export * from "./addToGroupForce";
 export * from "./delFromGroup";
 export * from "./postChat";
 export * from "./postUser"
