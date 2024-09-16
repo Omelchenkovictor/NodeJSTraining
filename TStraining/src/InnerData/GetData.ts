@@ -48,33 +48,9 @@ async function renewSession(UUID: string, username: string,) {
             }
         },
     })
-    //console.log(user.groups[0])
-
-    /* data.userId = (await getUser(req.cookies.user)).id,
-        data.role = req.cookies.role,
-        data.adminIn = await prisma.userInGroups.findMany({
-            where: {
-                userId: data.userId,
-                isAdmin: true
-            },
-            select: {
-                groupId: true,
-            }
-        })
-    data.bannedIn = await prisma.userInGroups.findMany({
-        where: {
-            userId: data.userId,
-            isBanned: true
-        },
-        select: {
-            groupId: true,
-        }
-    }) */
-
-
+    
 
     addNewSession(UUID, user)
-    //console.log(sessionMap)
 }
 
 async function checkSession(req: Request) {
@@ -93,7 +69,7 @@ async function checkSession(req: Request) {
 
 
 async function createUser(user: any) {
-    user.id = Number(user.id)
+
     user.password = await bcryptjs.hash(user.password, 10)
     user.role = 'user';
     await prisma.userAccount.create({
@@ -148,6 +124,7 @@ async function joinGroup(userId: number, groupId: number) {
 }
 
 async function leaveGroup(userId: number, groupId: number) {
+    
     userId = Number(userId);
     groupId = Number(groupId);
     await prisma.userInGroups.delete({
@@ -202,28 +179,6 @@ async function banInChat(userId: number, chatId: number) {
             isBanned: true
         },
         create: {
-            // userAndGroup: {
-            //     connectOrCreate: { 
-            //         where: {userId_groupId: {
-            //         userId: userId,
-            //         groupId: await getMessageGroupId(chatId)
-            //         } },
-            //         create: {
-            //             userId_groupId: {
-            //                 userId: userId,
-            //                 groupId: await getMessageGroupId(chatId)
-            //                 }
-            //         }
-
-            //     }
-            //     /* userId_groupId: {
-            //         userId: userId,
-            //         groupId: await getMessageGroupId(chatId)
-            //     } */
-            // },
-            // chat: {
-            //     connect: { id: chatId }
-            // },
 
             user: {
                 connect: {

@@ -1,6 +1,6 @@
 import { isChatBanned } from "../InnerData/GetData";
 import { accessSession } from "../InnerData/sessionControl";
-const chatAcces =  () => {
+const chatAccess =  () => {
 
 return async (req: any, _: any, next: Function) => {
 
@@ -33,4 +33,4 @@ return async (req: any, _: any, next: Function) => {
     }
 }}
 
-export { chatAcces }
+export { chatAccess }

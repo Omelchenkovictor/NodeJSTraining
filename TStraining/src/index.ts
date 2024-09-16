@@ -1,9 +1,8 @@
 import express from "express";
-import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup, addToGroup, banInChat, unBanInChat, delFromGroup, addToGroupForse } from "./handlers/index";
-//import { sessionId } from "./middleware/sessionId";
+import { getUser, postUser, logIn, postMessage, getMessage, getChat, getGroup, postChat, postGroup, setAdmin, deleteAdmin, banInGroup, unBanInGroup, addToGroup, banInChat, unBanInChat, delFromGroup, addToGroupForse, delFromGroupForce } from "./handlers/index";
 import cookieParser from "cookie-parser"
-import {  chatAcces, checkCurrentUser,  errorOut, permission } from "./middleware/index";
-//import { sessionMap } from "./InnerData/sessionControl";
+import { accessMessage, chatAcces,  errorOut, permission } from "./middleware/index";
+
 
 const server = express();
 //const sessions = sessionMap
@@ -33,11 +32,11 @@ server
         postUser,
         errorOut
     )
-    .post('/post/message',
+    .post('message',
         cookieParser(),
         express.json(),
-        permission(['user','admin','superAdmin']),
-        checkCurrentUser,
+        permission(['user', 'admin', 'superAdmin']),
+        accessMessage,
         postMessage,
         errorOut
     )
@@ -51,7 +50,7 @@ server
     .post('/post/chat',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         postChat,
         errorOut
     )
@@ -72,88 +71,91 @@ server
     .post('/banInGroup',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         banInGroup,
         errorOut
     )
     .post('/banInChat',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         banInChat,
         errorOut
     )
     .post('/ubBanInChat',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         unBanInChat,
         errorOut
     )
     .post('/unBan',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         unBanInGroup,
         errorOut
     )
     .post('/addToGroup',
         cookieParser(),
         express.json(),
-        permission(['user','admin','superAdmin']),
+        permission(['user', 'admin', 'superAdmin']),
         addToGroup,
         errorOut
     )
-    .post('/addToGroup',
+    .post('/addToGroupForce',
         cookieParser(),
         express.json(),
-        permission(['admin','superAdmin']),
+        permission(['admin', 'superAdmin']),
         addToGroupForse,
         errorOut
     )
     .post('/delFromGroup',
         cookieParser(),
         express.json(),
-        permission(['user','admin','superAdmin']),
-        checkCurrentUser,
+        permission(['user', 'admin', 'superAdmin']),
         delFromGroup,
         errorOut
     )
+    .post('/delFromGroupForce',
+        cookieParser(),
+        express.json(),
+        permission(['admin', 'superAdmin']),
+        delFromGroupForce,
+        errorOut
+    )
     .get('/user/:username',
-    cookieParser(),
-    express.json(),
-    getUser,
-    errorOut
-)
+        cookieParser(),
+        express.json(),
+        getUser,
+        errorOut
+    )
     .get('/message/:id',
         cookieParser(),
         express.json(),
-        permission(['user','admin','superAdmin']),
+        permission(['user', 'admin', 'superAdmin']),
         getMessage,
         errorOut
     )
     .get('/chat/:id',
-    cookieParser(),
-    express.json(),
-    permission(['user','admin','superAdmin']),
-    chatAcces(),
-    getChat,
-    errorOut
-)
+        cookieParser(),
+        express.json(),
+        permission(['user', 'admin', 'superAdmin']),
+        chatAcces(),
+        getChat,
+        errorOut
+    )
     .get('/Group/:id',
-    cookieParser(),
-    express.json(),
-    permission(['user','admin','superAdmin']),
-    getGroup,
-    errorOut
-)
-    
+        cookieParser(),
+        express.json(),
+        permission(['user', 'admin', 'superAdmin']),
+        getGroup,
+        errorOut
+    )
+
 
 
 server
-    .get('/get', (_, res): void => {
-        res.end('localhost is up')
-    })
     .listen(3000, () => {
         console.log('launched', 'http://localhost:3000/home');
     })

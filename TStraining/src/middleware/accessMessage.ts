@@ -1,6 +1,6 @@
 import { isChatBanned } from "../InnerData/GetData";
 import { accessSession } from "../InnerData/sessionControl";
-const chatAcces =  () => {
+const accessMessage =  () => {
 
 return async (req: any, _: any, next: Function) => {
 
@@ -14,11 +14,12 @@ return async (req: any, _: any, next: Function) => {
         if (session.role == 'superAdmin' 
             ||  await session.groups.find((element: any) =>
             element.group.chats.find((element1: any) =>
-                element1.id == req.params.id) && element.isAdmin) != undefined
+            element1.id == req.body.chatId) 
+            && element.isAdmin) != undefined
             || ( await session.groups.find((element: any) =>
-                element.group.chats.find((element1: any) =>
-                    element1.id == req.params.id)) != undefined
-                && (banned == null || !banned.isBanned)))
+            element.group.chats.find((element1: any) =>
+            element1.id == req.body.chatId)) != undefined
+            && (banned == null || !banned.isBanned)))
         {
             next()
         }
@@ -33,4 +34,4 @@ return async (req: any, _: any, next: Function) => {
     }
 }}
 
-export { chatAcces }
+export { accessMessage }

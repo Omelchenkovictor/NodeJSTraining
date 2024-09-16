@@ -3,6 +3,7 @@ export * from "./logIn";
 export * from "./addToGroup";
 export * from "./addToGroupForce";
 export * from "./delFromGroup";
+export * from "./delFromGroupForce";
 export * from "./postChat";
 export * from "./postUser"
 export * from "./postMessage"

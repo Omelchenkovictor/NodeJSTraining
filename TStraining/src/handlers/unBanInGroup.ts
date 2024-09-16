@@ -7,7 +7,9 @@ async function unBanInGroup(req: any, res: any, next: Function) {
         const userId = req.body.userId
         const groupId = req.body.groupId
 
-        if (session.role != 'superAdmin' && !session.groups.find((element: any) => element.groupId == groupId && element.isAdmin == true)) {
+        if (session.role != 'superAdmin' 
+            && !session.groups.find((element: any) => 
+                element.groupId == groupId && element.isAdmin == true)) {
             next('403')
 
         }

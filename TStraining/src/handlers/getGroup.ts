@@ -4,8 +4,9 @@ import { accessSession } from "../InnerData/sessionControl";
 async function getGroup(req: any, res: any, next: Function) {
     try {
         const session = await accessSession(req.cookies.sessionId)
-        if (session.role != 'superAdmin' &&
-            !session.groups.find((element: any) => element.groupId == req.params.id)) {
+        if (session.role != 'superAdmin' 
+            && !session.groups.find((element: any) => 
+                element.groupId == req.params.id)) {
             next('403')
 
         }
