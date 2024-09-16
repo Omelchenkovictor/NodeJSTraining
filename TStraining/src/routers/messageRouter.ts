@@ -2,9 +2,10 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import { accessMessage, errorOut, permission } from "../middleware/index";
 import { getMessage, postMessage } from "../handlers/index";
+
 const router = express.Router()
 
-router.post('/post',
+router.post('/',
     cookieParser(),
     express.json(),
     permission(['user', 'admin', 'superAdmin']),
@@ -12,7 +13,7 @@ router.post('/post',
     postMessage,
     errorOut)
 
-router.get('/get/:id',
+router.get('/:id',
     cookieParser(),
     express.json(),
     permission(['user', 'admin', 'superAdmin']),
