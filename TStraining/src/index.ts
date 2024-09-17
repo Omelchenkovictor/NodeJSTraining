@@ -1,11 +1,20 @@
 import express from "express";
-import {logIn} from "./handlers/index";
+import { createServer } from "http"
+import { logIn } from "./handlers/index";
 import cookieParser from "cookie-parser"
-import {  errorOut } from "./middleware/index";
-import {message, chat, user, group} from "./routers/index"
-import { alternateCookieParser } from "./alternateCookieParser";
+import { errorOut, permission } from "./middleware/index";
+import { message, chat, user, group } from "./routers/index"
+//import { alternateCookieParser } from "./alternateCookieParser";
+import { Server as ioServer } from "socket.io"
 
 const server = express();
+const httpServer = createServer(server)
+const io = new ioServer(httpServer/* ,
+    {
+        path: "http://localhost:3000/socketChat"
+      } */
+);
+
 //const sessions = sessionMap
 /* 
 fetch('/logIn', {
@@ -18,31 +27,50 @@ fetch('/logIn', {
 //(async() => {console.log( await bcryptjs.hash('adminPassword', 10))})()
 
 server
-    .get('/', (_, res) => {
-        res.end('Ready to go')
-    })
+    .get('/',
+        cookieParser(),
+        express.json(),
+        permission(['user', 'admin', 'superAdmin']),
+        (_, res) => {
+            res.sendFile("/home/viktor/NodeJSTraining/TStraining/html/chatbox.html");
+        }
+    )
     .get('/home', (_, res) => {
         res.end('Sweet Home!')
     })
-    .get('/test', 
-        alternateCookieParser,
-        (req, res) => {
-        console.log(req.cookies)
-        res.end('delivered')
-    })
+    /* .get('/socketChat', 
+        cookieParser(),
+        express.json(),
+        (_, res) => {
+        res.sendFile("/home/viktor/NodeJSTraining/TStraining/html/chatbox.html");
+    }) */
     .post('/login',
         cookieParser(),
         express.json(),
         logIn,
         errorOut
-    )    
+    )
     .use('/message', message)
     .use('/chat', chat)
     .use('/user', user)
     .use('/group', group)
 
 
-server
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        io.emit('chat message', msg);
+    });
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+
+
+
+httpServer
     .listen(3000, () => {
         console.log('launched', 'http://localhost:3000/home');
     })
