@@ -15,7 +15,9 @@
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
-    "joy": "^0.1.1"
+    "joy": "^0.1.1",
+    "socket.io": "^4.7.5",
+    "stable": "^0.1.8"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
