@@ -2,6 +2,7 @@ const { PrismaClient } = require('.prisma/client');
 import bcryptjs from "bcryptjs";
 import { Request } from "express";
 import { addNewSession } from "./sessionControl";
+import { user } from "../routers";
 
 const prisma = new PrismaClient();
 
@@ -342,19 +343,22 @@ async function getChat(id: number) {
 
 async function chatHistory(id: number) {
 
-    return (await prisma.chat.findFirst({
+    return (await prisma.message.findMany({
         where: {
-            id: Number(id),
+            chatId: Number(id),
         },
         include: {
 
-            messages: {
-                orderBy: {
+            author: {
+                select: {
+                    username: true
+                }
+            }
+        },
+        orderBy: {
                     id: 'desc',
                 },
-                take: 5
-            },
-        }
+        take: 5
     }))
 }
 

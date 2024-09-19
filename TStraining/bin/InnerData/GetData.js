@@ -300,18 +300,21 @@ async function getChat(id) {
     }));
 }
 async function chatHistory(id) {
-    return (await prisma.chat.findFirst({
+    return (await prisma.message.findMany({
         where: {
-            id: Number(id),
+            chatId: Number(id),
         },
         include: {
-            messages: {
-                orderBy: {
-                    id: 'desc',
-                },
-                take: 5
-            },
-        }
+            author: {
+                select: {
+                    username: true
+                }
+            }
+        },
+        orderBy: {
+            id: 'desc',
+        },
+        take: 5
     }));
 }
 async function getUsername(id) {

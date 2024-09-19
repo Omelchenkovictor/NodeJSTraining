@@ -90,9 +90,19 @@
       window.scrollTo(0, document.body.scrollHeight);
     });
 
+    socket.on('history', (data) => {
+      data.reverse().forEach((element) => {
+        var item = document.createElement('li');
+        item.textContent = element.author.username + ": " + element.text;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      })
+    });
+
     socket.on('error', (error) => {
       var item = document.createElement('li');
-      item.textContent = error.toString();
+      console.log(error)
+      item.textContent = error;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     });

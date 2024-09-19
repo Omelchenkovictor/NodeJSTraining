@@ -16,16 +16,13 @@ const alternateCookieParser_1 = require("./alternateCookieParser");
 const GetData_1 = require("./InnerData/GetData");
 const server = (0, express_1.default)();
 const httpServer = (0, http_1.createServer)(server);
-const io = new socket_io_1.Server(httpServer /* ,
-    {
-        path: "http://localhost:3000/socketChat"
-      } */);
+const io = new socket_io_1.Server(httpServer);
 //const sessions = sessionMap
 /*
 fetch('/logIn', {
     headers: { 'Content-Type': 'application/json'},
     method: 'POST',
-    body:'{"username": "Hannover", "password": "666"}'
+    body:'{"username": "SuperAdmin", "password": "1234"}'
 }).then(response=>response.text()).then(console.log)
  */
 //(async() => {console.log( await bcryptjs.hash('adminPassword', 10))})()
@@ -36,12 +33,6 @@ server
     .get('/home', (_, res) => {
     res.end('Sweet Home!');
 })
-    /* .get('/socketChat',
-        cookieParser(),
-        express.json(),
-        (_, res) => {
-        res.sendFile("/home/viktor/NodeJSTraining/TStraining/html/chatbox.html");
-    }) */
     .post('/login', (0, cookie_parser_1.default)(), express_1.default.json(), index_1.logIn, index_2.errorOut)
     .use('/message', index_3.message)
     .use('/chat', index_3.chat)
@@ -59,18 +50,13 @@ io.on('connection', async (socket) => {
                 && (banned == null || !banned.isBanned))) {
             socket.join(chatId.toString());
             const history = await (0, GetData_1.chatHistory)(chatId);
-            console.log(history.messages);
-            history.messages.reverse().forEach(async (element) => {
-                await io.to(socket.id).emit('chat message', await (0, GetData_1.getUsername)(element.userId) + ": " + element.text);
-            });
+            io.to(socket.id).emit('history', history);
             console.log('a', cookieMap.user, 'connected');
             socket.on('chat message', (msg) => {
-                // console.log('message: ' + msg);
-                // console.log(socket.request.headers.cookie);
                 let message = {
                     text: msg,
                     userId: session.id,
-                    chatId: chatId
+                    chatId
                 };
                 (0, GetData_1.createMessage)(message);
                 io.to(chatId.toString()).emit('chat message', cookieMap.user + ": " + msg);
@@ -85,7 +71,7 @@ io.on('connection', async (socket) => {
     }
     catch (error) {
         console.log(error);
-        io.emit('error', error);
+        io.to(socket.id).emit('error', 'Error 500');
     }
 });
 httpServer
