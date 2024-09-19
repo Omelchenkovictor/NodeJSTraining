@@ -7,9 +7,9 @@ async function banInChat(req, res, next) {
     try {
         let session = (0, sessionControl_1.accessSession)(req.cookies.sessionId);
         const userId = Number(req.body.userId);
-        const groupId = Number(req.body.groupId);
         const chatId = Number(req.body.chatId);
-        if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {
+        if (session.role != 'superAdmin'
+            && !session.groups.find((element) => element.group.chats.find((element1) => element1.id == req.chatId) && element.isAdmin)) {
             next('403');
         }
         else {

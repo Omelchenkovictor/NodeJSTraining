@@ -5,7 +5,7 @@ async function postMessage(req: any, res: any, next: Function) {
 
     try {
         let session = await accessSession(req.cookies.sessionId)
-        
+
         /* if (session.role == 'superAdmin'
             || await session.groups.find((element: any) =>
                 element.group.chats.find((element1: any) =>
@@ -25,9 +25,9 @@ async function postMessage(req: any, res: any, next: Function) {
         } */
 
         const message = req.body
-            message.userId = session.id
-            await createMessage(message)
-            res.end('done')
+        message.userId = session.id
+        await createMessage(message)
+        res.end('done')
 
 
     }

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chatAcces = void 0;
+exports.chatAccess = void 0;
 const GetData_1 = require("../InnerData/GetData");
 const sessionControl_1 = require("../InnerData/sessionControl");
-const chatAcces = () => {
+const chatAccess = () => {
     return async (req, _, next) => {
         try {
             const session = await (0, sessionControl_1.accessSession)(req.cookies.sessionId);
@@ -24,4 +24,4 @@ const chatAcces = () => {
         }
     };
 };
-exports.chatAcces = chatAcces;
+exports.chatAccess = chatAccess;

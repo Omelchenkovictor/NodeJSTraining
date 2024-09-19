@@ -6,6 +6,9 @@ import { errorOut, permission } from "./middleware/index";
 import { message, chat, user, group } from "./routers/index"
 //import { alternateCookieParser } from "./alternateCookieParser";
 import { Server as ioServer } from "socket.io"
+import { accessSession } from "./InnerData/sessionControl";
+import { alternateCookieParser2 } from "./alternateCookieParser";
+import { chatHistory, createMessage, getUsername, isChatBanned, StringParser } from "./InnerData/GetData";
 
 const server = express();
 const httpServer = createServer(server)
@@ -56,16 +59,58 @@ server
     .use('/group', group)
 
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('chat message', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('chat message', msg);
-    });
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+io.on('connection',async (socket) => {
+
+    try {
+        const cookieMap = alternateCookieParser2(socket.request.headers.cookie);
+        let chatId: any = StringParser(socket.request.headers.referer).chatId;
+        let session = accessSession(cookieMap.sessionId)
+        let banned = await isChatBanned(session.id, chatId)
+        if (session.role == 'superAdmin' 
+            ||  await session.groups.find((element: any) =>
+            element.group.chats.find((element1: any) =>
+                element1.id == chatId) && element.isAdmin) != undefined
+            || ( await session.groups.find((element: any) =>
+                element.group.chats.find((element1: any) =>
+                    element1.id == chatId)) != undefined
+                && (banned == null || !banned.isBanned)))
+        {
+        
+        socket.join(chatId.toString());
+        const history = await chatHistory(chatId)
+        console.log(history.messages)
+        history.messages.reverse().forEach(async(element: any) => {
+            await io.to(socket.id).emit('chat message', await getUsername(element.userId) + ": " + element.text)
+        });
+        console.log('a', cookieMap.user, 'connected');
+
+        socket.on('chat message', (msg) => {
+            // console.log('message: ' + msg);
+            // console.log(socket.request.headers.cookie);
+
+            let message = {
+                text: msg,
+                userId: session.id,
+                chatId: chatId
+            }
+            createMessage(message)
+            io.to(chatId.toString()).emit('chat message', cookieMap.user + ": " + msg);
+        });
+        socket.on('disconnect', () => {
+            console.log('a', cookieMap.user, 'disconnected');
+        });
+        }
+        else {
+            io.emit('error', 'error 403:' + ' ' + cookieMap.user + ' connection refused');
+        }
+    } catch (error) {
+        console.log(error);
+        io.emit('error', error);
+    }
 });
+
+
+
 
 
 

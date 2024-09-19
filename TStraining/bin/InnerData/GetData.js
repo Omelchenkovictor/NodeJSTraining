@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StringParser = void 0;
 exports.banInChat = banInChat;
 exports.unBanInChat = unBanInChat;
 exports.isChatBanned = isChatBanned;
@@ -24,10 +25,24 @@ exports.banInGroup = banInGroup;
 exports.leaveGroup = leaveGroup;
 exports.unBanInGroup = unBanInGroup;
 exports.deleteAdmin = deleteAdmin;
+exports.chatHistory = chatHistory;
+exports.getUsername = getUsername;
 const { PrismaClient } = require('.prisma/client');
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const sessionControl_1 = require("./sessionControl");
 const prisma = new PrismaClient();
+const StringParser = (data) => {
+    let reader = data.split('/?');
+    let map = {};
+    reader.forEach((element, index) => {
+        if (index != 0) {
+            let data = element.split('=');
+            map[data[0]] = data[1];
+        }
+    });
+    return map;
+};
+exports.StringParser = StringParser;
 async function createSession(sessionId, user, date) {
     await prisma.Session.create({
         data: {
@@ -65,29 +80,7 @@ async function renewSession(UUID, username) {
             }
         },
     });
-    //console.log(user.groups[0])
-    /* data.userId = (await getUser(req.cookies.user)).id,
-        data.role = req.cookies.role,
-        data.adminIn = await prisma.userInGroups.findMany({
-            where: {
-                userId: data.userId,
-                isAdmin: true
-            },
-            select: {
-                groupId: true,
-            }
-        })
-    data.bannedIn = await prisma.userInGroups.findMany({
-        where: {
-            userId: data.userId,
-            isBanned: true
-        },
-        select: {
-            groupId: true,
-        }
-    }) */
     (0, sessionControl_1.addNewSession)(UUID, user);
-    //console.log(sessionMap)
 }
 async function checkSession(req) {
     return await prisma.Session.findFirst({
@@ -100,7 +93,6 @@ async function checkSession(req) {
     });
 }
 async function createUser(user) {
-    user.id = Number(user.id);
     user.password = await bcryptjs_1.default.hash(user.password, 10);
     user.role = 'user';
     await prisma.userAccount.create({
@@ -186,27 +178,6 @@ async function banInChat(userId, chatId) {
             isBanned: true
         },
         create: {
-            // userAndGroup: {
-            //     connectOrCreate: { 
-            //         where: {userId_groupId: {
-            //         userId: userId,
-            //         groupId: await getMessageGroupId(chatId)
-            //         } },
-            //         create: {
-            //             userId_groupId: {
-            //                 userId: userId,
-            //                 groupId: await getMessageGroupId(chatId)
-            //                 }
-            //         }
-            //     }
-            //     /* userId_groupId: {
-            //         userId: userId,
-            //         groupId: await getMessageGroupId(chatId)
-            //     } */
-            // },
-            // chat: {
-            //     connect: { id: chatId }
-            // },
             user: {
                 connect: {
                     id: userId
@@ -327,6 +298,28 @@ async function getChat(id) {
             messages: true,
         }
     }));
+}
+async function chatHistory(id) {
+    return (await prisma.chat.findFirst({
+        where: {
+            id: Number(id),
+        },
+        include: {
+            messages: {
+                orderBy: {
+                    id: 'desc',
+                },
+                take: 5
+            },
+        }
+    }));
+}
+async function getUsername(id) {
+    return await (await prisma.userAccount.findFirst({
+        where: {
+            id: id,
+        },
+    })).username;
 }
 async function getGroup(id) {
     return (await prisma.group.findFirst({

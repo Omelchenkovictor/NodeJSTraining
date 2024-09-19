@@ -16,10 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./errorOut"), exports);
 __exportStar(require("./sessionChecker"), exports);
-__exportStar(require("./sessionId"), exports);
-__exportStar(require("./permissionUser"), exports);
-__exportStar(require("./permissionAdmin"), exports);
-__exportStar(require("./permissionSuperAdmin"), exports);
 __exportStar(require("./checkCurrentUser"), exports);
 __exportStar(require("./permission"), exports);
 __exportStar(require("./accessChat"), exports);
+__exportStar(require("./accessMessage"), exports);

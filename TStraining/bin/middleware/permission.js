@@ -6,7 +6,7 @@ var permission = (targetRole) => {
     return async (req, _, next) => {
         try {
             var session = await (0, sessionControl_1.accessSession)(req.cookies.sessionId);
-            if (targetRole.find((element) => element == session.role) == undefined) {
+            if (!targetRole.includes(session.role) /* .find((element) => element == session.role) == undefined */) {
                 next('403');
             }
             else {

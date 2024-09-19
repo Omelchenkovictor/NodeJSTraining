@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.group = exports.user = exports.chat = exports.message = void 0;
+var messageRouter_1 = require("./messageRouter");
+Object.defineProperty(exports, "message", { enumerable: true, get: function () { return messageRouter_1.router; } });
+var chatRouter_1 = require("./chatRouter");
+Object.defineProperty(exports, "chat", { enumerable: true, get: function () { return chatRouter_1.router; } });
+var userRouter_1 = require("./userRouter");
+Object.defineProperty(exports, "user", { enumerable: true, get: function () { return userRouter_1.router; } });
+var groupRouter_1 = require("./groupRouter");
+Object.defineProperty(exports, "group", { enumerable: true, get: function () { return groupRouter_1.router; } });

@@ -6,6 +6,18 @@ import { addNewSession } from "./sessionControl";
 const prisma = new PrismaClient();
 
 
+const StringParser = (data: any) => {
+    let reader = data.split('/?')
+    let map: any = {}
+    reader.forEach((element: String, index: number) => {
+        if (index != 0) {
+            let data = element.split('=');
+            map[data[0]] = data[1];
+        }
+    })
+    return map
+}
+
 async function createSession(sessionId: string, user: any, date: Date) {
 
     await prisma.Session.create({
@@ -48,7 +60,7 @@ async function renewSession(UUID: string, username: string,) {
             }
         },
     })
-    
+
 
     addNewSession(UUID, user)
 }
@@ -124,7 +136,7 @@ async function joinGroup(userId: number, groupId: number) {
 }
 
 async function leaveGroup(userId: number, groupId: number) {
-    
+
     userId = Number(userId);
     groupId = Number(groupId);
     await prisma.userInGroups.delete({
@@ -262,7 +274,7 @@ async function setAdmin(userId: number, groupId: number) {
     })
     await prisma.userAccount.update({
         where: {
-            id:  userId
+            id: userId
         },
         data: {
             role: 'admin'
@@ -328,6 +340,34 @@ async function getChat(id: number) {
     }))
 }
 
+async function chatHistory(id: number) {
+
+    return (await prisma.chat.findFirst({
+        where: {
+            id: Number(id),
+        },
+        include: {
+
+            messages: {
+                orderBy: {
+                    id: 'desc',
+                },
+                take: 5
+            },
+        }
+    }))
+}
+
+async function getUsername(id: number) {
+
+    return await (await prisma.userAccount.findFirst({
+        where: {
+            id: id,
+        },
+
+    })).username
+}
+
 async function getGroup(id: number) {
 
     return (await prisma.group.findFirst({
@@ -343,4 +383,4 @@ async function getGroup(id: number) {
 
 
 
-export { banInChat, unBanInChat, isChatBanned, getMessageGroupId, createSession, checkSession, renewSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup, unBanInGroup, deleteAdmin }
+export { banInChat, unBanInChat, isChatBanned, getMessageGroupId, createSession, checkSession, renewSession, getUser, getChat, getMessage, getGroup, createUser, createChat, createGroup, createMessage, joinGroup, setAdmin, banInGroup, leaveGroup, unBanInGroup, deleteAdmin, StringParser, chatHistory, getUsername }

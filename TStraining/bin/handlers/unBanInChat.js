@@ -9,7 +9,8 @@ async function unBanInChat(req, res, next) {
         const userId = Number(req.body.userId);
         const groupId = Number(req.body.groupId);
         const chatId = Number(req.body.chatId);
-        if (session.role != 'superAdmin' && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {
+        if (session.role != 'superAdmin'
+            && !session.groups.find((element) => element.groupId == groupId && element.isAdmin == true)) {
             next('403');
         }
         else {
